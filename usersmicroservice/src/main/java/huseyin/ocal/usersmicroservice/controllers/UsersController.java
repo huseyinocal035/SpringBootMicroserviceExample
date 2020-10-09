@@ -1,5 +1,6 @@
 package huseyin.ocal.usersmicroservice.controllers;
 import huseyin.ocal.usersmicroservice.dto.CreateUser;
+import huseyin.ocal.usersmicroservice.dto.CreateUserResponse;
 import huseyin.ocal.usersmicroservice.dto.UserDto;
 import huseyin.ocal.usersmicroservice.services.UsersService;
 import lombok.AllArgsConstructor;
@@ -7,6 +8,8 @@ import lombok.NoArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -24,15 +27,17 @@ public class UsersController {
         return "working bro! on port --> " + environment.getProperty("local.server.port");
     }
 
-    @PostMapping("/create")
-    public String createUser(@RequestBody @Valid CreateUser createUser) {
+    @PostMapping("/createUser")
+    public ResponseEntity<CreateUserResponse> createUser(@RequestBody @Valid CreateUser createUser) {
 
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
         UserDto userDto = modelMapper.map(createUser, UserDto.class);
-        usersService.createUser(userDto);
+        UserDto createdUser = usersService.createUser(userDto);
 
-        return "User created";
+        CreateUserResponse returnValue = modelMapper.map(createdUser, CreateUserResponse.class);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(returnValue);
     }
 }
