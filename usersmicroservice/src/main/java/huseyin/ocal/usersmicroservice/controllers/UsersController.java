@@ -24,7 +24,7 @@ public class UsersController {
         return "working bro! on port --> " + environment.getProperty("local.server.port");
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public String createUser(@RequestBody @Valid CreateUser createUser) {
 
         ModelMapper modelMapper = new ModelMapper();
