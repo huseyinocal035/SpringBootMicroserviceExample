@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 @Data
 @Entity(name = "users")
-public class User implements Serializable {
+public class UserEntity implements Serializable {
 
     @Id @GeneratedValue(generator="system-uuid")
     @GenericGenerator(name="system-uuid", strategy = "uuid")
