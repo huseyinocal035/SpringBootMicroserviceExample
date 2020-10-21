@@ -24,8 +24,9 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
         http.headers().frameOptions().disable();
         http.authorizeRequests()
-                .antMatchers("/users-ws/h2-console/**").permitAll()
-                .antMatchers(HttpMethod.POST, "/users-ws/login").permitAll()
+                .antMatchers(environment.getProperty("h2console.url.path")).permitAll()
+                .antMatchers(HttpMethod.POST, environment.getProperty("api.registration.url.path")).permitAll()
+                .antMatchers( HttpMethod.POST,environment.getProperty("api.login.url.path")).permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilter(new AuthorizationFilter(authenticationManager(), environment));

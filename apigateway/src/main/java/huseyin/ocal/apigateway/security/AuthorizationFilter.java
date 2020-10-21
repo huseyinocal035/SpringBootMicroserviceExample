@@ -1,10 +1,10 @@
 package huseyin.ocal.apigateway.security;
 
 import io.jsonwebtoken.Jwts;
+import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import javax.servlet.FilterChain;
@@ -16,16 +16,20 @@ import java.util.ArrayList;
 
 public class AuthorizationFilter extends BasicAuthenticationFilter {
 
-    public AuthorizationFilter(AuthenticationManager authenticationManager, org.springframework.core.env.Environment environment) {
-        super(authenticationManager, (AuthenticationEntryPoint) environment);
+    private final Environment environment;
+
+    public AuthorizationFilter(AuthenticationManager authenticationManager, Environment environment) {
+        super(authenticationManager);
+        this.environment = environment;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        String authorizationHeader = request.getHeader("Authorization");
+        String authorizationHeader = request.getHeader(environment.getProperty("authorization.token.header.name"));
 
-        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer")) {
+        if (authorizationHeader == null || !authorizationHeader.startsWith(
+                environment.getProperty("authorization.token.header.prefix"))) {
             chain.doFilter(request, response);
             return;
         }
@@ -37,16 +41,17 @@ public class AuthorizationFilter extends BasicAuthenticationFilter {
     }
 
     private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
-        String authorizationHeader = request.getHeader("Authorization");
+        String authorizationHeader = request.getHeader(environment.getProperty("authorization.token.header.name"));
 
         if (authorizationHeader == null) {
             return null;
         }
 
-        String token = authorizationHeader.replace("Bearer", "");
+        String token = authorizationHeader.replace(
+                environment.getProperty("authorization.token.header.name.prefix"), "");
 
         String userId = Jwts.parser()
-                .setSigningKey("huso123456")
+                .setSigningKey(environment.getProperty("token.secret"))
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
@@ -55,6 +60,6 @@ public class AuthorizationFilter extends BasicAuthenticationFilter {
             return null;
         }
 
-        return new UsernamePasswordAuthenticationToken(userId, new ArrayList<>());
+        return new UsernamePasswordAuthenticationToken(userId, null, new ArrayList<>());
     }
 }
