@@ -16,20 +16,16 @@ import java.util.ArrayList;
 
 public class AuthorizationFilter extends BasicAuthenticationFilter {
 
-    private final Environment environment;
-
-    public AuthorizationFilter(AuthenticationManager authenticationManager, Environment environment) {
+    public AuthorizationFilter(AuthenticationManager authenticationManager) {
         super(authenticationManager);
-        this.environment = environment;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        String authorizationHeader = request.getHeader(environment.getProperty("authorization.token.header.name"));
+        String authorizationHeader = request.getHeader(SecurityConstants.HEADER_STRING);
 
-        if (authorizationHeader == null || !authorizationHeader.startsWith(
-                environment.getProperty("authorization.token.header.prefix"))) {
+        if (authorizationHeader == null || !authorizationHeader.startsWith(SecurityConstants.TOKEN_PREFIX)) {
             chain.doFilter(request, response);
             return;
         }
@@ -41,17 +37,16 @@ public class AuthorizationFilter extends BasicAuthenticationFilter {
     }
 
     private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
-        String authorizationHeader = request.getHeader(environment.getProperty("authorization.token.header.name"));
+        String authorizationHeader = request.getHeader(SecurityConstants.HEADER_STRING);
 
         if (authorizationHeader == null) {
             return null;
         }
 
-        String token = authorizationHeader.replace(
-                environment.getProperty("authorization.token.header.name.prefix"), "");
+        String token = authorizationHeader.replace(SecurityConstants.TOKEN_PREFIX, "");
 
         String userId = Jwts.parser()
-                .setSigningKey(environment.getProperty("token.secret"))
+                .setSigningKey(SecurityConstants.SECRET)
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();

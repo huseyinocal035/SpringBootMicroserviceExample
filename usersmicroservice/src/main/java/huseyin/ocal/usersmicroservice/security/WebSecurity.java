@@ -13,7 +13,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @EnableWebSecurity
 public class WebSecurity extends WebSecurityConfigurerAdapter {
 
-    Environment environment;
     private UsersService usersService;
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -34,9 +33,9 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     }
 
     private AuthenticationFilter getAuthenticationFilter() throws Exception {
-        AuthenticationFilter authenticationFilter = new AuthenticationFilter(usersService, environment, authenticationManager());
+        AuthenticationFilter authenticationFilter = new AuthenticationFilter(usersService, authenticationManager());
 //        authenticationFilter.setAuthenticationManager(authenticationManager());
-        authenticationFilter.setFilterProcessesUrl("/login");
+        authenticationFilter.setFilterProcessesUrl(SecurityConstants.LOGIN_URL);
         return authenticationFilter;
     }
 

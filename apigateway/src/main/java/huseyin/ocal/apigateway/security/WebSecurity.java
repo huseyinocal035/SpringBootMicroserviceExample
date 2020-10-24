@@ -12,24 +12,20 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 @EnableWebSecurity
 public class WebSecurity extends WebSecurityConfigurerAdapter {
 
-    private final Environment environment;
-
     public WebSecurity(Environment environment) {
-        this.environment = environment;
     }
-
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
         http.headers().frameOptions().disable();
         http.authorizeRequests()
-                .antMatchers(environment.getProperty("h2console.url.path")).permitAll()
-                .antMatchers(HttpMethod.POST, environment.getProperty("api.registration.url.path")).permitAll()
-                .antMatchers( HttpMethod.POST,environment.getProperty("api.login.url.path")).permitAll()
+                .antMatchers(SecurityConstants.H2CONSOLE).permitAll()
+                .antMatchers(HttpMethod.POST, SecurityConstants.REGISTRATION).permitAll()
+                .antMatchers( HttpMethod.POST, SecurityConstants.LOGIN).permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .addFilter(new AuthorizationFilter(authenticationManager(), environment));
+                .addFilter(new AuthorizationFilter(authenticationManager()));
 
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }

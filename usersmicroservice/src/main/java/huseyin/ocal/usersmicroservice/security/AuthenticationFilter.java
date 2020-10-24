@@ -6,7 +6,7 @@ import huseyin.ocal.usersmicroservice.dto.UserDto;
 import huseyin.ocal.usersmicroservice.services.UsersService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.core.env.Environment;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -22,14 +22,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 
+import static huseyin.ocal.usersmicroservice.security.SecurityConstants.EXPIRATION_TIME;
+import static huseyin.ocal.usersmicroservice.security.SecurityConstants.SECRET;
+
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private UsersService usersService;
-    private Environment environment;
 
-    public AuthenticationFilter(UsersService usersService, Environment environment, AuthenticationManager authenticationManager) {
+    @Autowired
+    public AuthenticationFilter(UsersService usersService, AuthenticationManager authenticationManager) {
         this.usersService = usersService;
-        this.environment = environment;
         super.setAuthenticationManager(authenticationManager);
     }
 
@@ -59,8 +61,8 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
         String token = Jwts.builder()
                 .setSubject(userDto.getUserId())
-                .setExpiration(new Date(System.currentTimeMillis() + Long.parseLong("864000000")))
-                .signWith(SignatureAlgorithm.HS512, "huso123456")
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .signWith(SignatureAlgorithm.HS512, SECRET)
                 .compact();
         response.addHeader("token", token);
         response.addHeader("userId", userDto.getUserId());
