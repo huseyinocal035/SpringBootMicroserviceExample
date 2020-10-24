@@ -27,6 +27,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/users/**").permitAll()
                 .antMatchers("/root/**").permitAll()
+                .antMatchers("/root-ws/root/status").permitAll()
                 .and()
                 .addFilter(getAuthenticationFilter());
         http.headers().frameOptions().disable();
