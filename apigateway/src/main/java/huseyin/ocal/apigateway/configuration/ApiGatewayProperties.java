@@ -8,12 +8,29 @@ import org.springframework.context.annotation.Configuration;
 @Data
 @Configuration
 @EnableConfigurationProperties
-@ConfigurationProperties(prefix = "web-security")
+@ConfigurationProperties(prefix = "web.security")
 public class ApiGatewayProperties {
 
-    private String h2console;
+    private String status;
 
     private String registration;
 
     private String login;
+
+    private String header;
+
+    private String header_prefix;
+
+    private String token_secret;
+
+//    private String xxx;
+//
+//    @Data
+//    public static class Xxx {
+//
+//        private String axxx;
+//
+//        private String bxxx;
+//    }
+
 }

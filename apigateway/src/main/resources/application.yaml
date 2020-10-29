@@ -1,16 +1,20 @@
 spring:
   application:
-  name: zuul
+    name: zuul
 server:
   port: 8011
 eureka:
   client:
     service-url:
       defaultZone: http://localhost:8010/eureka
-web-security:
-  h2console: users-ws/root/status
-  registration: /users-ws/root/users
-  login: /users-ws/login
-  authorization-token-header-name: Authorization
-  authorization-token-header-prefix: Bearer
-  token-secret: hfgry463hf746hf573ydh475fhy5739
+web
+  security:
+    status: users-ws/root/status
+    registration: /users-ws/root/users
+    login: /users-ws/login
+    header: Authorization
+    header_prefix: Bearer
+    token_secret: hfgry463hf746hf573ydh475fhy5739
+#    xxx:
+#      axxx: something
+#      bxxx: another sth
