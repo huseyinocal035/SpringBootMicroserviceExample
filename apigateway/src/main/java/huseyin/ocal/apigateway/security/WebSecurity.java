@@ -20,6 +20,8 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
         http.headers().frameOptions().disable();
         http.authorizeRequests()
+                .antMatchers(SecurityConstants.USERACTUATOR).permitAll()
+                .antMatchers(SecurityConstants.ACTUATOR).permitAll()
                 .antMatchers(SecurityConstants.H2CONSOLE).permitAll()
                 .antMatchers(HttpMethod.POST, SecurityConstants.REGISTRATION).permitAll()
                 .antMatchers( HttpMethod.POST, SecurityConstants.LOGIN).permitAll()

@@ -7,4 +7,7 @@ public class SecurityConstants {
     public static final String H2CONSOLE = "users-ws/root/status";
     public static final String REGISTRATION = "/users-ws/root/users";
     public static final String LOGIN = "/users-ws/login";
+    public static final String ACTUATOR = "/actuator/*";
+    public static final String USERACTUATOR = "users-ws/actuator/*";
+
 }

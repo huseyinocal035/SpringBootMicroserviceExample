@@ -42,3 +42,8 @@ web:
     expiration_time: 864000000
     token_secret: hfgry463hf746hf573ydh475fhy5739
     login: /login
+management:
+  endpoints:
+    web:
+      exposure:
+        include: mappings

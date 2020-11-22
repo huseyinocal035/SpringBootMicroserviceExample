@@ -13,7 +13,7 @@ eureka:
   client:
     service-url:
       defaultZone: http://localhost:8010/eureka
-web
+web:
   security:
     status: users-ws/root/status
     registration: /users-ws/root/users
@@ -24,3 +24,9 @@ web
 #    xxx:
 #      axxx: something
 #      bxxx: another sth
+management:
+  endpoint:
+  endpoints:
+    web:
+      exposure:
+        include: bean, health, routes ,httptrace
